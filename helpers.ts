@@ -64,6 +64,7 @@ export function nikeActivityToGpx(activity: nike.FullActivity): GpxActivity {
     nike.MetricType.ELEVATION,
     activity
   );
+  const adjustedElevs = adjustValuesToTimes(lats, elevs);
   const hrs = getMetricValuesFromActivity(nike.MetricType.HEART_RATE, activity);
   const adjustedHRs = adjustValuesToTimes(lats, hrs);
   const extensions = adjustedHRs.map((hr) =>
@@ -77,7 +78,7 @@ export function nikeActivityToGpx(activity: nike.FullActivity): GpxActivity {
     points.push({
       "@lat": lats[i].value,
       "@lon": lons[i].value,
-      ele: elevs[i].value,
+      ele: adjustedElevs[i]?.value,
       time: msToISOString((lats[i].start_epoch_ms + lats[i].end_epoch_ms) / 2),
       ...(currentExtensions && { extensions: currentExtensions }),
     });
